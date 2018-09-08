@@ -12,21 +12,40 @@ public class ScoreService {
 
     /**
      * 浇水机制
-     * */
+     */
     public void watering(int userid, int planetid) {
         User user = UserFactory.getUserById(userid);
         Planet planet = user.getPlanet().get(planetid);
         int score = planet.getScore();
         int status = planet.getStatus();
         score += 1;
+        checkScore(planet, score, status);
+        planet.setScore(score);
+    }
+
+    /**
+     * 施肥机制
+     */
+    public void fertilization(int userid, int planetid) {
+        User user = UserFactory.getUserById(userid);
+        Planet planet = user.getPlanet().get(planetid);
+        int score = planet.getScore();
+        int status = planet.getStatus();
+        score += 5;
+        checkScore(planet, score, status);
+        planet.setScore(score);
+    }
+
+    private void checkScore(Planet planet, int score, int status) {
         if (score >= BASE_SCORE * planet.getPlanetType().getLevel()) {
             score = 0;
             status += 1;
-            planet.setStatus(status);
             if (status >= DONE_LEVEL) {
-                //todo 栽培完成
+                //todo
+            }else {
+                planet.setStatus(status);
+                planet.setScore(score);
             }
         }
-        planet.setScore(score);
     }
 }
